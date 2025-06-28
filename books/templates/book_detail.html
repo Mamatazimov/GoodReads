@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %} Book Detail {% endblock %}
+
+{% block content %}
+    <hr/>
+    <div class="container">
+        <div class="row">
+            <div class="col-4">
+                <img style="width: 24rem;height: 15rem;" src="{{ book.cover_img.url }}" alt="Book Image">
+            </div>
+            <div class="col-8">
+                <div class="row">
+                    {% for book_author in book.bookauthor_set.all %}
+                        <span class="fst-italic">
+                            Authored by:
+                            {% if forloop.last %}
+                                {{ book_author.author.first_name }} {{ book_author.author.last_name }}!
+                            {% else %}
+                                {{ book_author.author.first_name }} {{ book_author.author.last_name }},
+                            {% endif %}
+                        </span>
+                    {% empty %}
+                        <span class="fst-italic">No data about this book's author</span>
+                    {% endfor %}
+                    <hr/>
+                </div>
+                <h3>{{ book.title }}</h3>
+                <p>{{ book.discription }}</p>
+            </div>
+        </div>
+        <hr/>
+        <div class="row">
+            <form class="row" method="POST">
+                {% csrf_token %}
+                <div class="col-8">
+                    {{ form.review_text }}
+                </div>
+                <div class="col-4">
+                    {{ form.rating }}
+                    <div class="d-grid gap-2">
+                        <input class="btn btn-outline-success btn-sm" type="submit" value="Submit">
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+        <hr/>
+        {% if book.bookreview_set.exists %}
+            {% for review in book.bookreview_set.all %}
+                <div class="row d-flex justify-content-around mb-3">
+                    <div class="col-2">
+                        <img style="height: 8rem;width: 8rem;" class="img-thumbnail"
+                             src="{{ review.user.profile.profile_picture.url }}">
+                    </div>
+                    <div class="col-9">
+                        <h5>
+                            <span class="fw-bold">{{ review.user.username }}</span> |
+                            <span>rated {{ review.rating }} stars</span> |
+                            <span class="fw-light">{{ review.created_at }}</span>
+                            {% if review.user == request.user %}
+                                <a href="{% url 'books:book_update' book.id review.id %}">U</a>
+                                <a href="{% url 'books:book_delete' book.id review.id %}">D</a>
+                            {% endif %}
+
+                        </h5>
+                        <p>{{ review.review_text }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h4 class="fw-light">No Review</h4>
+        {% endif %}
+
+    </div>
+
+
+{% endblock %}

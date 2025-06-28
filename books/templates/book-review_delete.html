@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Review edit{% endblock %}
+
+{% block content %}
+    <h2>Are you sure to delete this review ?</h2>
+
+        <form class="row my-3" method="Get" action="{% url 'books:book_detail' book.id %}">
+                    <input class="btn btn-outline-secondary btn-sm" type="submit" value="No, i dont want to delete">
+        </form>
+
+        <form class="row" method="POST">
+            {% csrf_token %}
+
+                    <input class="btn btn-outline-success btn-sm" type="submit" value="Yes, delete">
+        </form>
+
+
+
+{% endblock %}
+
+

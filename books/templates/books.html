@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Book List{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center">Books List</h1>
+
+        <div class="row justify-content-end mb-3">
+            <div class="col-5">
+                <form method="GET" class="d-flex justify-content-center">
+                    <input class="form-control me-3" value="{{ search_query }}" type="text" name="q" placeholder="Search Books...">
+                    <input class="btn btn-outline-success" type="submit" value="Search">
+                </form>
+            </div>
+        </div>
+
+
+        {% for book in page_obj.object_list %}
+            <a href='{% url "books:book_detail" book.id %}'>
+                <div class="row mb-3 border rounded p-2" >
+                        <div class="col-2 ms-auto"><img class="img-thumbnail " style="width: 4rem;height: 6rem;" src="{{book.cover_img.url}}" alt="Book Image"></div>
+                        <div class="col-10 position-relative"><h3 class="position-absolute top-50 start-50 translate-middle">{{ book.title }}</h3></div>
+                </div>
+            </a>
+
+
+        {% empty %}
+            <li>No books available.</li>
+        {% endfor %}
+
+    <nav aria-label="...">
+      <ul class="pagination">
+
+
+          {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a class="page-link"  tabindex="-1" aria-disabled="true" href="{% url 'books:book_list'  %}?page={{ page_obj.previous_page_number }}">previous</a>
+              </li>
+          {% endif %}
+
+
+          <li class="page-item disabled" aria-current="page">
+              <a class="page-link">{{ page_obj.number }}</a>
+          </li>
+
+
+          {% if page_obj.has_next %}
+              <li class="page-item">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="{% url 'books:book_list'  %}?page={{ page_obj.next_page_number }}">next</a>
+              </li>
+          {% endif %}
+
+
+      </ul>
+    </nav>
+
+
+
+{% endblock %}
+

@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Review edit{% endblock %}
+
+{% block content %}
+    <div class="container">
+    <div class="row">
+        <div class="col-4">
+            <img style="width: 24rem;height: 15rem;" src="{{ book.cover_img.url }}" alt="Book Image">
+        </div>
+        <div class="col-8">
+            <div class="row">
+                {% for book_author in book.bookauthor_set.all %}
+                    <span class="fst-italic">
+                            Authored by:
+                        {% if forloop.last %}
+                            {{ book_author.author.first_name }} {{ book_author.author.last_name }}!
+                        {% else %}
+                            {{ book_author.author.first_name }} {{ book_author.author.last_name }},
+                        {% endif %}
+                        </span>
+                {% empty %}
+                    <span class="fst-italic">No data about this book's author</span>
+                {% endfor %}
+                <hr/>
+            </div>
+            <h3>{{ book.title }}</h3>
+            <p>{{ book.discription }}</p>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <form class="row" method="POST">
+            {% csrf_token %}
+            <div class="col-8">
+                {{ form.review_text }}
+            </div>
+            <div class="col-4">
+                {{ form.rating }}
+                <div class="d-grid gap-2">
+                    <input class="btn btn-outline-success btn-sm" type="submit" value="Save">
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+
+
+
+
+
+
+
+{% endblock %}
+
+

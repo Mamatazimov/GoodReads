@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <h1 style="text-align: center;margin-bottom: 1rem;">Home Page</h1>
+    <div class="row">
+        <div class="col-3">
+
+        </div>
+        <div class="col-6 border pt-3">
+            {% for review in page_obj %}
+                <div class="row d-flex justify-content-around mb-3">
+                    <div class="col-4">
+                        <img style="height: 8rem;width: 8rem;" class="img-thumbnail"
+                             src="{{ review.user.profile.profile_picture.url }}">
+                    </div>
+                    <div class="col-8">
+
+                        <h5><span class="fw-bold">{{ review.user.username }}</span> | <span style="font-size: 1rem">rated {{ review.rating }} stars</span>
+                            | <span style="font-size: 0.8rem" class="fw-light">{{ review.created_at }}</span></h5>
+                        <p style="font-size:1rem;">{{ review.review_text|truncatechars:288 }}</p>
+
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <a class="btn btn-outline-secondary btn-sm" href="{% url 'books:book_detail' review.book.id %}">Kitobga
+                        O'tish</a>
+                </div>
+
+                <hr/>
+            {% endfor %}
+
+            <nav aria-label="...">
+                <ul class="pagination">
+
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" tabindex="-1" aria-disabled="true"
+                               href="{% url 'home' %}?page={{ page_obj.previous_page_number }}">previous</a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item disabled" aria-current="page">
+                        <a class="page-link">{{ page_obj.number }}</a>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" tabindex="-1" aria-disabled="true"
+                               href="{% url 'home' %}?page={{ page_obj.next_page_number }}">next</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </nav>
+
+        </div>
+        <div class="col-3">
+            <form method="GET" action="{% url "books:book_list" %}" class="d-flex justify-content-center">
+                <input class="form-control me-3" value="{{ search_query }}" type="text" name="q"
+                       placeholder="Search Books...">
+                <input class="btn btn-outline-success" type="submit" value="Search">
+            </form>
+        </div>
+    </div>
+{% endblock %}
