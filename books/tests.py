@@ -151,6 +151,50 @@ class BookReviewTestCase(TestCase):
         self.assertFalse(BookReview.objects.filter(pk=r1.id).exists())
 
 
+class BookAuthorTestCase(TestCase):
+    def test_book_author(self):
+        book = Book.objects.create(title='Book1', discription='Discription1', isbn='121212121212')
+        user = User.objects.create(username='userbek', email='test@mail.com', first_name='Userjon',
+                                   last_name='Usertoyev')
+        user.set_password('<PASSWORD>')
+        user.save()
+
+        self.client.force_login(user)
+
+        author = Author.objects.create(first_name="fn_author",last_name="ln_author",email="menauthor@mail.com",bio="Bu author bizning djangoni test casei uchun oylab topilgan.")
+        BookAuthor.objects.create(book=book,author=author)
+
+        response = self.client.get(reverse("books:book_author",kwargs={"id":book.id}))
+
+        self.assertEqual(response.status_code,200)
+        self.assertContains(response,author.first_name)
+        self.assertContains(response,author.last_name)
+        self.assertContains(response,author.email)
+        self.assertContains(response,author.bio)
+
+    def test_limit_book_author(self):
+        author = Author.objects.create(first_name="fn_author",last_name="ln_author",email="menauthor@mail.com",bio="Bu author bizning djangoni test casei uchun oylab topilgan.")
+        user = User.objects.create(username='userbek', email='test@mail.com', first_name='Userjon',
+                                           last_name='Usertoyev')
+        user.set_password('<PASSWORD>')
+        user.save()
+
+        self.client.force_login(user)
+
+        for i in range(13):
+            book = Book.objects.create(title=f'Book{i}', discription='Discription1', isbn=f'{i}121212121212')
+            BookAuthor.objects.create(book=book,author=author)
+
+
+
+        response = self.client.get(reverse("books:book_author",kwargs={"id":author.id}))
+
+        self.assertEqual(response.status_code,200)
+        self.assertContains(response,"Book1")
+        self.assertContains(response,"Book5")
+        self.assertContains(response,"Book9")
+        self.assertNotContains(response,"Book10")
+        self.assertNotContains(response,"Book12")
 
 
 

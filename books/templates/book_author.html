@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Author{% endblock %}
+
+{% block content %}
+	<h2 style="text-align:center;">Book Author</h2><hr/>
+	<div class="container ">
+		<div class="d-flex justify-content-center">
+			<div class="text-center">
+				<h3>{{ author.first_name }} {{ author.last_name }}</h3>
+				<h5>{{ author.email }}</h5>
+				<p>{{ author.bio }}</p><hr/>
+			</div>
+		</div>
+		<div>
+			{% for author_book in author.bookauthor_set.all|slice:':10' %}
+				<a href='{% url "books:book_detail" author_book.book.id %}'>
+	                <div class="row mb-3 border rounded p-2" >
+	                    <div class="col-2 ms-auto"><img class="img-thumbnail " style="width: 4rem;height: 6rem;" src="{{author_book.book.cover_img.url}}" alt="Book Image"></div>
+	                    <div class="col-10 position-relative"><h3 class="position-absolute top-50 start-50 translate-middle">{{ author_book.book.title }}</h3></div>
+	                </div>
+            	</a>
+
+			{% empty %}
+				<p class="fst-italic">This author no any book</p>
+			{% endfor %}
+		</div>
+	</div>
+	
+
+
+{% endblock %}

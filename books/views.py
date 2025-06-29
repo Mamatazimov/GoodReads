@@ -7,7 +7,7 @@ from django.views import View
 from django.views.generic import ListView, DetailView, UpdateView
 
 from .forms import ReviewForm
-from .models import Book, BookReview
+from .models import Book, BookReview, Author, BookAuthor
 
 
 # class BookListView(ListView):
@@ -87,4 +87,8 @@ class DeleteReviewView(LoginRequiredMixin, View):
         return redirect(reverse("books:book_detail",kwargs={"id":book.id}))
 
 
+class BookAuthorView(View):
+    def get(self,request,id):
+        author=Author.objects.filter(id=id).first()
+        return render(request,"book_author.html",{"author":author})
 
